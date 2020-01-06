@@ -1,7 +1,7 @@
 <html>
 <body>
-<h2>COD Implemented</h2>
-<h2>Net Bank Implemented</h2>
-<h2>Debit Card Implemented</h2>
+<h2>COD1 Implemented</h2>
+<h2>NetBank1 Implemented</h2>
+<h2>Debit Card1 Implemented</h2>
 </body>
 </html>
