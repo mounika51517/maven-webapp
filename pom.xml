@@ -17,11 +17,11 @@
   </dependencies>
   <build>
     <finalName>webapp</finalName>
-<distributionManagement>
+  </build>
+  <distributionManagement>
   <repository>
     <id>releases</id>
     <url>http://3.85.191.240:8081/nexus/content/repositories/releases</url>
   </repository>
 </distributionManagement>
-  </build>
 </project>
