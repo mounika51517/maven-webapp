@@ -40,7 +40,7 @@ pipeline{
             steps{
                 sshagent(['tomcat1']) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no target/webapp.war centos@35.173.184.25:~/apache-tomcat-8.5.54/webapps/
+                    scp -o StrictHostKeyChecking=no target/webapp.war centos@35.173.184.25:~/apache-tomcat-8.5.54/webapps/
                     ssh centos@35.173.184.25 /home/centos/apache-tomcat-8.5.54/bin/shutdown.sh
                     ssh centos@35.173.184.25 /home/centos/apache-tomcat-8.5.54/bin/startup.sh
                     '''
