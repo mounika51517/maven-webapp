@@ -1,0 +1,11 @@
+pipeline{
+    agent any
+    stages{
+        stage('package'){
+            tools {
+               mvnpath = maven 'maven1'
+            }
+            sh 'mvn package'
+        }
+    }
+}
