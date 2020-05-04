@@ -3,7 +3,9 @@ pipeline{
     stages{
         stage('package'){
             steps{
-                def path = tool name: 'maven1', type: 'maven'
+                tools {
+                     def path = maven 'maven1'
+                }
                 sh script: "${path}/mvn package"
             }
         }
