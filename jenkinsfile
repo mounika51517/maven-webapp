@@ -1,12 +1,12 @@
 pipeline{
     agent any
+    tools {
+        maven 'maven1'
+    }
     stages{
         stage('package'){
             steps{
-                tools {
-                     def path = maven 'maven1'
-                }
-                sh script: "${path}/mvn package"
+                sh script: 'mvn package'
             }
         }
     }
