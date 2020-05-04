@@ -5,7 +5,7 @@ pipeline{
         maven 'maven1'
     }
     options {
-        buildDiscarder logRotator(daysToKeepStr: '1', numToKeepStr: '3')
+         buildDiscarder logRotator(daysToKeepStr: '1', numToKeepStr: '3')
     }
     stages{
         stage('package'){
