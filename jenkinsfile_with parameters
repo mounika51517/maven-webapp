@@ -1,0 +1,76 @@
+properties([parameters([choice(choices: ['master'], description: 'to select branch', name: 'branch')])])
+currentBuild.displayName = "demo-#" + currentBuild.number
+pipeline{
+    agent any
+    tools {
+        maven 'maven1'
+    }
+    options {
+         buildDiscarder logRotator(daysToKeepStr: '1', numToKeepStr: '3')
+    }
+    stages{
+        stage('git'){
+        steps{
+        git branch: "${params.branch}", url: 'https://github.com/mounika51517/maven-webapp.git'
+        }
+        }
+        stage('package'){
+            steps{
+                sh script: 'mvn package'
+            }
+        }
+        stage('sonar analysis'){
+            steps{
+                withSonarQubeEnv('sonar1') {
+                 sh script: 'mvn sonar:sonar'
+                }
+            }
+        }
+        stage("Quality Gate"){
+            steps{
+                script{
+                  timeout(time: 1, unit: 'HOURS') {
+                  def qg = waitForQualityGate()
+                  if (qg.status != 'OK') {
+                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                  }
+                  }
+              }
+            }
+        }        
+        stage('deploy to nexus'){
+            steps{
+                script{
+                    def pomversion = readMavenPom file: 'pom.xml'
+                    def pomfolder = pomversion.version.endsWith("SNAPSHOT") ? "maven-webapp-snapshots" : "maven-webapp-releases"
+                    nexusArtifactUploader artifacts: [
+                    [
+                    artifactId: 'webapp',
+                    classifier: '',
+                    file: 'target/webapp.war',
+                    type: 'war'
+                    ]
+                    ],
+                    credentialsId: 'nexus',
+                    groupId: 'com.ravi.web',
+                    nexusUrl: '35.173.184.25:8081',
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    repository: pomfolder,
+                    version: "${pomversion.version}"
+                }
+            }
+        }
+        stage('deploy to tomcat'){
+            steps{
+                sshagent(['tomcat1']) {
+                    sh '''
+                    scp -o StrictHostKeyChecking=no target/webapp.war centos@35.173.184.25:~/apache-tomcat-8.5.54/webapps/
+                    ssh centos@35.173.184.25 /home/centos/apache-tomcat-8.5.54/bin/shutdown.sh
+                    ssh centos@35.173.184.25 /home/centos/apache-tomcat-8.5.54/bin/startup.sh
+                    '''
+                }
+            }
+        }
+    }
+}
