@@ -12,8 +12,10 @@ pipeline{
         }
         stage('deploy to nexus'){
             steps{
-            nexusArtifactUploader artifacts: [
-                [
+                script{
+                    def pomversion = readMavenPom file:'pom.xml'
+                    nexusArtifactUploader artifacts: [
+                    [
                     artifactId: 'webapp',
                     classifier: '',
                     file: 'target/webapp.war',
@@ -26,7 +28,8 @@ pipeline{
                     nexusVersion: 'nexus3',
                     protocol: 'http',
                     repository: 'maven-webapp-releases',
-                    version: '3.2'
+                    version: "${pomversion}"
+                }
             }
         }
     }
