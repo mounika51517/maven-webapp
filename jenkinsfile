@@ -11,6 +11,7 @@ pipeline{
             }
         }
         stage('deploy to nexus'){
+            steps{
             nexusArtifactUploader artifacts: [
                 [
                     artifactId: 'webapp',
@@ -26,6 +27,7 @@ pipeline{
                     protocol: 'http',
                     repository: 'maven-webapp-releases',
                     version: '3.2'
+            }
         }
     }
 }
