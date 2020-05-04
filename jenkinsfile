@@ -3,6 +3,9 @@ pipeline{
     stages{
         stage('package'){
             steps{
+                tools {
+                 maven 'maven1'  
+                      }
                 sh script: 'mvn package'
                 }
         }
